@@ -1,15 +1,13 @@
+from subprocess import Popen, PIPE, CalledProcessError
 from pkg_resources import DistributionNotFound
 
-try:
-    from subprocess import check_output
-except ImportError:
-    # pre2.7 compatibility
-    from subprocess import Popen, CalledProcessError
-    def check_output(args):
-        try:
-            return Popen(args).communicate()[0]
-        except OSError as e:
-            raise CalledProcessError(*e)
+def check_output(args, stdout=None, stderr=None):
+    try:
+        if stdout is None:
+            stdout = PIPE
+        return Popen(args, stdout=stdout, stderr=stderr).communicate()[0]
+    except OSError as e:
+        raise CalledProcessError(*e)
 
 def check_requirement():
     try:

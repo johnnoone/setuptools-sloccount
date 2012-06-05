@@ -1,11 +1,11 @@
-from utils import check_output
-import setuptools
+from .utils import check_output
+import setuptools, sys
 
 class SloccountCommand(setuptools.Command):
 
     description = "run clonedigger on all your modules"
 
-    user_options = [
+    exec_options = [
         ('cached', None, 'Do  not  recalculate. Instead, use cached results \
                     from a previous execution.  Without the --cached or \
                     --append option, sloccount  automatically  removes  the  \
@@ -61,25 +61,35 @@ class SloccountCommand(setuptools.Command):
                     final reports'),
     ]
 
+    user_options = exec_options + [
+        # ('exclude-files=', None, 'exclude files? .git by default'),
+        ('file=', None, "write into this file"),
+    ]
+
     boolean_options = [
         'version', 'cached', 'append', 'follow', 'duplicates', 'crossdups',
         'autogen', 'multiproject', 'filecount', 'wide', 'details', 'addlangall'
     ]
 
     def initialize_options(self):
-        for longopt, shortopt, desc in self.user_options:
+        for longopt, shortopt, desc in self.exec_options:
             setattr(self, longopt.replace('-', '_'), None)
+        # self.exclude_files = '.git'
+        self.file = None
 
     def finalize_options(self):
-        pass
+        if self.file:
+            self.file = open(self.file, 'w')
 
     def run(self):
         options = []
-        for longopt, shortopt, desc in self.user_options:
+        for longopt, shortopt, desc in self.exec_options:
             value = getattr(self, longopt.replace('-', '_'))
             if value == 1 and longopt in self.boolean_options:
                 options.append('--{0}'.format(longopt))
             elif value is not None:
                 options.append('--{0}={1}'.format(longopt, value))
 
-        check_output(['sloccount'] + options + ["src"])
+        check_output(['sloccount'] + options + ["src"],
+            stdout=self.file, stderr=self.file)
+
