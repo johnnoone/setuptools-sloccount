@@ -3,7 +3,7 @@ Setuptools sloccount command
 
 This package adds `sloccount`_ command to setup.py.
 
-.. _`sloccount` :http://www.dwheeler.com/sloccount/
+.. _`sloccount` : http://www.dwheeler.com/sloccount/
 
 
 Usage

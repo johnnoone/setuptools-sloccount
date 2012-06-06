@@ -22,7 +22,7 @@ NEWS = open(os.path.join(here, 'NEWS.txt')).read()
 
 version = '0.1'
 
-setup(name='setuptools_sloccount',
+setup(name='setuptools-sloccount',
     version=version,
     description="Setuptools command for sloccount",
     long_description=README + '\n\n' + NEWS,
